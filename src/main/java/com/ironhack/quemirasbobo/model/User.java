@@ -29,4 +29,9 @@ public class User {
     )
     private List<Film> films = new ArrayList<>();
 
+    public User(String name, String username, String password) {
+        this.name = name;
+        this.username = username;
+        this.password = password;
+    }
 }
