@@ -1,9 +1,12 @@
-package com.ironhack.quemirasbobo.dto;
+package com.ironhack.quemirasbobo.model;
 
 
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -19,6 +22,11 @@ public class User {
     private String password;
 
     @ManyToMany
-    private <List>TvShow tvShow;
+    @JoinTable(
+            name = "user_films",
+            joinColumns = @JoinColumn (name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "film_id")
+    )
+    private List<Film> films = new ArrayList<>();
 
 }

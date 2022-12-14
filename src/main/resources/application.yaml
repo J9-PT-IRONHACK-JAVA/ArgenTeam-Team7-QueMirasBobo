@@ -1,5 +1,8 @@
 spring:
   datasource:
+    #url: jdbc:mysql://db4free.net:3306/j9_quemirasbobo
+    #username: quemirasbobosoft
+    #password: quemirasbobo
     url: jdbc:mysql://localhost:3306/j9_quemirasbobo
     username: ironhacker
     password: 1r0nh4ck3r
@@ -7,4 +10,4 @@ spring:
   jpa:
     show-sql: true
     hibernate:
-      ddl-auto: create
+        ddl-auto: create
