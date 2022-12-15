@@ -22,7 +22,7 @@ public class Menu {
     private final PlatformProxy platformProxy;
 
 
-
+    private final UserService userService;
     public void run(){
         var scanner = new Scanner(System.in);
 
@@ -100,10 +100,9 @@ public class Menu {
         System.out.println("Insert password:");
         var password = scanner.nextLine();
 
-        var user = userRepository.findUserByUsername(username);
+        var user = userService.findUserByUsername(username);
 
         return user.getPassword().equals(password);
-
     }
 
     private void userCreate(Scanner scanner) {
@@ -114,11 +113,11 @@ public class Menu {
         System.out.println("Insert PASSWORD:");
         var password = scanner.nextLine();
 
-        var user = new User(name,username,password);
+        var user = userService.createUser(new User(name,username,password));
 
         userRepository.save(user);
 
-        System.out.println("User "+username+" created!");
+        System.out.println("User " + username + " created!");
     }
 
 
