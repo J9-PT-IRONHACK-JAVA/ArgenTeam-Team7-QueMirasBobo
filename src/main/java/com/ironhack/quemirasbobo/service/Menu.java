@@ -85,7 +85,6 @@ public class Menu {
         var number = scanner.nextLine();
 
         var filmToGetPlatforms = result.getResults().get(Integer.parseInt(number)-1);
-
         var platforms = platformProxy.getAllPlatformsFromFilmId(filmToGetPlatforms.getId());
 
         for (int i = 0; i < platforms.size(); i++) {
