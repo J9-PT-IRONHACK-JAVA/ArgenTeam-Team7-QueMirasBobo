@@ -31,4 +31,9 @@ public class Film {
     )
     private List<Platform> platforms;
 
+    public Film(String name, Type type, Integer year) {
+        this.name = name;
+        this.type = type;
+        this.year = year;
+    }
 }
