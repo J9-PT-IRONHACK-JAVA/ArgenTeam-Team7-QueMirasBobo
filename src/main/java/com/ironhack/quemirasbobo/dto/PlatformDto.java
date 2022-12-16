@@ -10,5 +10,7 @@ public class PlatformDto {
     private Long source_id;
     private String name;
 
-
+    public PlatformDto(String name) {
+        this.name = name;
+    }
 }
