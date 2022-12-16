@@ -1,13 +1,22 @@
 package com.ironhack.quemirasbobo.service;
 
+import com.ironhack.quemirasbobo.dto.PlatformDto;
+import com.ironhack.quemirasbobo.model.Film;
+import com.ironhack.quemirasbobo.model.Platform;
+import com.ironhack.quemirasbobo.model.Type;
 import com.ironhack.quemirasbobo.model.User;
 import com.ironhack.quemirasbobo.proxy.FilmProxy;
 import com.ironhack.quemirasbobo.proxy.PlatformProxy;
+import com.ironhack.quemirasbobo.repository.FilmRepository;
 import com.ironhack.quemirasbobo.repository.UserRepository;
+import com.ironhack.quemirasbobo.utils.PrintUtils;
+import com.ironhack.quemirasbobo.utils.Utils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+import java.util.List;
+import java.util.Objects;
 import java.util.Scanner;
 
 @Service
@@ -21,6 +30,10 @@ public class Menu {
 
 
     private final PlatformProxy platformProxy;
+
+    private final Utils utils;
+
+    private final FilmRepository filmRepository;
 
 
     private final UserService userService;
@@ -69,31 +82,159 @@ public class Menu {
 
     }
 
-    private void userMenu(Scanner scanner) {
-        System.out.println("Welcome to your menu!");
-        System.out.println("insert tv show to search:");
+    public void userMenu(Scanner scanner, User user) {
+        String option ="";
+
+        while(!option.equals("3")){
+            utils.clearConsole();
+            System.out.println("********************");
+            System.out.println(user.getName() + " personal workspace");
+            System.out.println("********************");
+            System.out.println("Select option:");
+            System.out.println("    1) Search Film.");
+            System.out.println("    2) See all Watched Films.");
+            System.out.println("    3) Logout.");
+            System.out.println("    4) Chau! (shutdown)");
+
+            option = scanner.nextLine();
+
+            switch (option){
+                case "1":{
+                    searchOption(scanner, user);
+                    break;
+                }
+                case "2":{
+                    System.out.println("see all watched films");
+                    break;
+                }
+                case "3":{
+                    System.out.println("Goodbye "+user.getName()+"!");
+                    break;
+                }
+                case "4":{
+                    PrintUtils.goodBye();
+                    System.exit(0);
+                }
+                default:{
+                    System.out.println("\nPlease insert a valid option!");
+                    utils.pause(1500);
+                }
+            }
+        }
+    }
+
+    private void searchOption(Scanner scanner, User user) {
+        System.out.println("Insert name of film to search: ");
         var film = scanner.nextLine();
-
         var result = filmProxy.searchFilmsByName(film);
-        for (int i = 0; i < result.getResults().size(); i++) {
-            var filmDto = result.getResults().get(i);
-            System.out.println((i+1)+ ") "+
-                    filmDto.getName()+ ", Year: "+
-                    filmDto.getYear()+ ", Type: "+
-                    filmDto.getType()
-            );
+
+        //TODO: Ver si el size es 0, decirle que busque otro nombre
+        if(result.getResults().size() == 0){
+            System.out.println("Your search did not return any results, please try again...");
+            utils.pause(1500);
+        }else {
+            int resultsPerPage = 15;
+            int actualResultCount = 0;
+
+            for (int i = 0; i < result.getResults().size(); i++) {
+                var filmDto = result.getResults().get(i);
+                actualResultCount++;
+                System.out.println((i + 1) + ") " +
+                        filmDto.getName() + ", Year: " +
+                        filmDto.getYear() + ", Type: " +
+                        filmDto.getType()
+                );
+                // Detiene a los 15
+                if (actualResultCount == resultsPerPage) {
+                    actualResultCount = 0;
+                    utils.promptEnterKey();
+                }
+            }
+
+            System.out.println("\nSelect Nº:");
+            boolean flag = true;
+            int number = 0;
+            var op = "";
+            do {
+                try {
+                    op = scanner.nextLine();
+                    number = Integer.parseInt(op);
+                    if(number<=0 || number >result.getResults().size()){
+                        System.out.println("Error! Put a number from the list...");
+                    }else {
+                        flag = false;
+                    }
+                } catch (Exception ignored) {
+                    System.out.println("Error! Please insert only numbers...");
+                }
+            } while (flag);
+
+            var filmToGetPlatforms = result.getResults().get(number - 1);
+
+            var platforms = platformProxy.getAllPlatformsFromFilmId(filmToGetPlatforms.getId());
+            if (platforms.size() == 0){
+                System.out.println("The film does not have platforms...");
+                platforms.add(new PlatformDto("No Platforms"));
+            }else {
+                platforms = utils.deleteDuplicate(platforms);
+                System.out.println("The film have the next platforms:");
+                for (int i = 0; i < platforms.size(); i++) {
+                    System.out.println(platforms.get(i).getName());
+                }
+            }
+            System.out.println("Do you want to see the movie? (Y/N");
+            var option = scanner.nextLine().toUpperCase();
+
+            while (!option.equals ("Y") && !option.equals ("N")){
+                System.out.println("You must write 'Y' or 'N'");
+                option = scanner.nextLine().toUpperCase();
+            }
+
+            if (option.equals("Y")){
+                System.out.println("guardar peli");
+
+                Type filmType;
+                switch (filmToGetPlatforms.getType().toLowerCase()){
+                    //MOVIE, TV_SERIES, TV_MOVIE, SHORT_FILM,
+                    case "movie":{
+                        filmType = Type.MOVIE;
+                    }
+                    case "tv_series":{
+                        filmType = Type.TV_SERIES;
+                    }
+                    case "tv_movie":{
+                        filmType = Type.TV_MOVIE;
+                    }
+                    case "short_film":{
+                        filmType = Type.SHORT_FILM;
+                    }
+                    default:{
+                        filmType = Type.OTHER;
+                    }
+                }
+                var filmToSave = new Film(filmToGetPlatforms.getName(),
+                        filmType,
+                        filmToGetPlatforms.getYear()
+                        );
+                filmToSave.setUsers(List.of(user));
+                filmToSave = filmRepository.save(filmToSave);
+
+                //var platformToSave = new Platform()
+                // TODO, seguir esto!
+
+
+
+            }else{
+                System.out.println("no guardar");
+            }
+
+
+
+
+            //TODO: Que pregunte si "desea ver la pelicula"?
+            // Si la quiere ver, que lo guarde en la DB, sino, que vuelva al inicio del usuario
+            // En la DB tiene que guardar LA PELICULA y LAS PLATAFORMAS
         }
-        System.out.println("Select Nº:");
-        var number = scanner.nextLine();
-
-        var filmToGetPlatforms = result.getResults().get(Integer.parseInt(number)-1);
-        var platforms = platformProxy.getAllPlatformsFromFilmId(filmToGetPlatforms.getId());
-
-        for (int i = 0; i < platforms.size(); i++) {
-            System.out.println(platforms.get(i).getName());
-        }
-
-        System.out.println("FIN");
     }
 
     private Optional<User> LoginSignUpMenu(Scanner scanner) {

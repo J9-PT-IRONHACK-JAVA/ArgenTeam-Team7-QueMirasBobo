@@ -1,5 +1,6 @@
 package com.ironhack.quemirasbobo;
 
+import com.ironhack.quemirasbobo.model.User;
 import com.ironhack.quemirasbobo.proxy.FilmProxy;
 import com.ironhack.quemirasbobo.proxy.PlatformProxy;
 import com.ironhack.quemirasbobo.service.Menu;
@@ -8,6 +9,8 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.openfeign.EnableFeignClients;
+
+import java.util.Scanner;
 
 @SpringBootApplication
 @EnableFeignClients
@@ -36,7 +39,11 @@ public class Day26ProyectoEquiposTvSeriesApplication implements CommandLineRunne
 		//for (int i = 0; i < platforms.size(); i++) {
 		//	System.out.println(platforms.get(i).getName());
 		//}
-		menu.run();
+		var scanner = new Scanner(System.in);
+		var user1 = new User("Juan", "juan", "pass");
+		menu.userMenu(scanner,user1);
+		//menu.run();
+
 
 	}
 }
