@@ -3,6 +3,7 @@ package com.ironhack.quemirasbobo.repositoryTest;
 import com.ironhack.quemirasbobo.Day26ProyectoEquiposTvSeriesApplication;
 import com.ironhack.quemirasbobo.model.User;
 import com.ironhack.quemirasbobo.repository.UserRepository;
+import com.ironhack.quemirasbobo.service.Menu;
 import com.ironhack.quemirasbobo.service.UserService;
 import lombok.experimental.StandardException;
 import org.junit.jupiter.api.AfterEach;

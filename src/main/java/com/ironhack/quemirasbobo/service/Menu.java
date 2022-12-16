@@ -97,21 +97,28 @@ public class Menu {
     }
 
     private Optional<User> LoginSignUpMenu(Scanner scanner) {
-        var choseLog = scanner.nextLine();
+        String choseLog;
         Optional<User> user = Optional.empty();
         while (user.isEmpty()) {
             System.out.println("""
                 1) Login
                 2) Sign up
+                3) Exit
                 """);
+            choseLog = scanner.nextLine();
             switch (choseLog) {
                 case "1" -> user = loginMenu(scanner);
                 case "2" -> signUpMenu(scanner);
+                case "3" -> {
+                    System.out.println("Chau!");
+                    System.exit(0);
+                }
+                default -> System.out.println("This option does not exist, please try again");
             }
         }
         return user;
     }
-
+    // How can I test without running?
     private Optional<User> loginMenu(Scanner scanner) {
         Optional<User> user;
         boolean valid = false;
@@ -125,13 +132,16 @@ public class Menu {
             if (user.isPresent())
                 valid = user.get().getPassword().equals(password);
             if (!valid) {
-                System.err.println("Invalid credentials, what do you want to do?" +
-                        " 1) Try again" +
-                        " 2) Exit");
+                System.err.println("""
+                        Invalid credentials, what do you want to do?
+                        1) Try again
+                        2) Exit
+                        """);
                 exit = scanner.nextLine();
             }
         } while ((!valid && exit.equals("1")));
-        return user;
+        if (valid) return user;
+        else return Optional.empty();
     }
 
     private void signUpMenu(Scanner scanner) {
