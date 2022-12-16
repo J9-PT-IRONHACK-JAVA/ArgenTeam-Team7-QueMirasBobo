@@ -3,9 +3,7 @@ package com.ironhack.quemirasbobo.repositoryTest;
 import com.ironhack.quemirasbobo.Day26ProyectoEquiposTvSeriesApplication;
 import com.ironhack.quemirasbobo.model.User;
 import com.ironhack.quemirasbobo.repository.UserRepository;
-import com.ironhack.quemirasbobo.service.Menu;
 import com.ironhack.quemirasbobo.service.UserService;
-import lombok.experimental.StandardException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -13,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
