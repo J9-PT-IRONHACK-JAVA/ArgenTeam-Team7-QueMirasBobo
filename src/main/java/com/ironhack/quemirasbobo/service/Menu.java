@@ -14,6 +14,7 @@ import com.ironhack.quemirasbobo.utils.Utils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
 import java.util.List;
 import java.util.Objects;
 import java.util.Scanner;
@@ -35,13 +36,14 @@ public class Menu {
     private final FilmRepository filmRepository;
 
 
-
+    private final UserService userService;
     public void run(){
         var scanner = new Scanner(System.in);
 
         System.out.println("Welcome!");
-        //userMenu(scanner);
-
+        var user = LoginSignUpMenu(scanner);
+        if (user.isPresent())
+            userMenu(scanner /*, user*/);
         /*
         System.out.println("Select LOGIN or CREATE user: ");
         var option = scanner.nextLine();
@@ -235,19 +237,55 @@ public class Menu {
         }
     }
 
-    private Boolean loginMenu(Scanner scanner) {
-        System.out.println("Insert username:");
-        var username = scanner.nextLine();
-        System.out.println("Insert password:");
-        var password = scanner.nextLine();
-
-        var user = userRepository.findUserByUsername(username);
-
-        return user.getPassword().equals(password);
-
+    private Optional<User> LoginSignUpMenu(Scanner scanner) {
+        String choseLog;
+        Optional<User> user = Optional.empty();
+        while (user.isEmpty()) {
+            System.out.println("""
+                1) Login
+                2) Sign up
+                3) Exit
+                """);
+            choseLog = scanner.nextLine();
+            switch (choseLog) {
+                case "1" -> user = loginMenu(scanner);
+                case "2" -> signUpMenu(scanner);
+                case "3" -> {
+                    System.out.println("Chau!");
+                    System.exit(0);
+                }
+                default -> System.out.println("This option does not exist, please try again");
+            }
+        }
+        return user;
+    }
+    // How can I test without running?
+    private Optional<User> loginMenu(Scanner scanner) {
+        Optional<User> user;
+        boolean valid = false;
+        String exit = null;
+        do {
+            System.out.println("Insert username:");
+            var username = scanner.nextLine();
+            System.out.println("Insert password:");
+            var password = scanner.nextLine();
+            user = userService.findUserByUsername(username);
+            if (user.isPresent())
+                valid = user.get().getPassword().equals(password);
+            if (!valid) {
+                System.err.println("""
+                        Invalid credentials, what do you want to do?
+                        1) Try again
+                        2) Exit
+                        """);
+                exit = scanner.nextLine();
+            }
+        } while ((!valid && exit.equals("1")));
+        if (valid) return user;
+        else return Optional.empty();
     }
 
-    private void userCreate(Scanner scanner) {
+    private void signUpMenu(Scanner scanner) {
         System.out.println("Insert NAME:");
         var name = scanner.nextLine();
         System.out.println("Insert USERNAME:");
@@ -255,11 +293,9 @@ public class Menu {
         System.out.println("Insert PASSWORD:");
         var password = scanner.nextLine();
 
-        var user = new User(name,username,password);
+        var user = userService.createUser(new User(name,username,password));
 
-        userRepository.save(user);
-
-        System.out.println("User "+username+" created!");
+        System.out.println("User " + username + " created!");
     }
 
 
