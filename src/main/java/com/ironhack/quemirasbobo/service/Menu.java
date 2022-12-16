@@ -2,7 +2,6 @@ package com.ironhack.quemirasbobo.service;
 
 import com.ironhack.quemirasbobo.dto.PlatformDto;
 import com.ironhack.quemirasbobo.model.Film;
-import com.ironhack.quemirasbobo.model.Platform;
 import com.ironhack.quemirasbobo.model.Type;
 import com.ironhack.quemirasbobo.model.User;
 import com.ironhack.quemirasbobo.proxy.FilmProxy;
@@ -16,7 +15,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 import java.util.List;
-import java.util.Objects;
 import java.util.Scanner;
 
 @Service
@@ -43,7 +41,7 @@ public class Menu {
         System.out.println("Welcome!");
         var user = LoginSignUpMenu(scanner);
         if (user.isPresent())
-            userMenu(scanner /*, user*/);
+            userMenu(scanner, user.get());
         /*
         System.out.println("Select LOGIN or CREATE user: ");
         var option = scanner.nextLine();
@@ -104,6 +102,7 @@ public class Menu {
                     break;
                 }
                 case "2":{
+                    // TODO Las films que se guardan para cada user
                     System.out.println("see all watched films");
                     break;
                 }
@@ -293,7 +292,7 @@ public class Menu {
         System.out.println("Insert PASSWORD:");
         var password = scanner.nextLine();
 
-        var user = userService.createUser(new User(name,username,password));
+        var user = userService.saveUser(new User(name,username,password));
 
         System.out.println("User " + username + " created!");
     }
