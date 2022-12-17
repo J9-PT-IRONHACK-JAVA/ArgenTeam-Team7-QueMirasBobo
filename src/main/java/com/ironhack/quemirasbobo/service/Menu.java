@@ -126,6 +126,7 @@ public class Menu {
             do {
                 try {
                     op = scanner.nextLine();
+                    utils.clearConsole();
                     number = Integer.parseInt(op);
                     if(number<=0 || number >result.getResults().size()){
                         System.out.println("Error! Put a number from the list...");
@@ -323,6 +324,7 @@ public class Menu {
         var user = userService.saveUser(new User(name,username,password));
 
         System.out.println("User " + username + " created!");
+        utils.pause(2000);
     }
 
 
