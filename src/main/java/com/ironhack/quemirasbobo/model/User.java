@@ -5,7 +5,6 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -29,5 +28,4 @@ public class User {
         this.username = username;
         this.password = password;
     }
-
 }

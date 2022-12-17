@@ -21,64 +21,22 @@ import java.util.*;
 @RequiredArgsConstructor
 public class Menu {
 
-    private final UserRepository userRepository;
-
-
     private final FilmProxy filmProxy;
-
-
     private final PlatformProxy platformProxy;
-
     private final Utils utils;
-
+    private final UserRepository userRepository;
     private final FilmRepository filmRepository;
-
+    private final FilmService filmService;
     private final UserService userService;
-
     private final PlatformRepository platformRepository;
+    private final PlatformService platformService;
     public void run(){
         var scanner = new Scanner(System.in);
 
         System.out.println("Welcome!");
         var user = LoginSignUpMenu(scanner);
         if (user.isPresent())
-            userMenu(scanner , user.get());
-        /*
-        System.out.println("Select LOGIN or CREATE user: ");
-        var option = scanner.nextLine();
-
-        switch (option.toLowerCase()) {
-            case "login": {
-                var login = loginMenu(scanner);
-                if (login){
-                    System.out.println("user logged!");
-                }else{
-                    System.out.println("error at login");
-                }
-                break;
-            }
-            case "create": {
-                userCreate(scanner);
-                break;
-            }
-            default: {
-                System.out.println("Option Error");
-            }
-        }
-        var login = loginMenu(scanner);
-        if (login){
-            userMenu(scanner);
-        }else{
-            System.out.println("error at login");
-        }
-
-
-
-
-         */
-
-
-
+            userMenu(scanner, user.get());
     }
 
     public void userMenu(Scanner scanner, User user) {
@@ -103,6 +61,8 @@ public class Menu {
                     break;
                 }
                 case "2":{
+                    // TODO Las films que se guardan para cada user
+                    showAllWatchedFilms(scanner, user);
                     System.out.println("see all watched films");
                     break;
                 }
@@ -254,6 +214,20 @@ public class Menu {
         }
     }
 
+    private void showAllWatchedFilms(Scanner scanner, User user) {
+        var allFilms = filmService.findFilms(user);
+        for (int i = 0; i < allFilms.size(); i++) {
+            System.out.printf("%d - %s\n", i + 1, allFilms.get(i).getName());
+        }
+        System.out.println("Choose one to see in which platform you can watch it again");
+        var option = scanner.nextLine();
+        var movie = allFilms.get(Integer.parseInt(option) - 1);
+        var listPlatforms = platformService.findPlatforms(movie);
+        for (int i = 0; i < listPlatforms.size(); i++) {
+            System.out.printf("%d - %s\n", i + 1, listPlatforms.get(i).getName());
+        }
+    }
+
     private Optional<User> LoginSignUpMenu(Scanner scanner) {
         String choseLog;
         Optional<User> user = Optional.empty();
@@ -310,7 +284,7 @@ public class Menu {
         System.out.println("Insert PASSWORD:");
         var password = scanner.nextLine();
 
-        var user = userService.createUser(new User(name,username,password));
+        var user = userService.saveUser(new User(name,username,password));
 
         System.out.println("User " + username + " created!");
     }

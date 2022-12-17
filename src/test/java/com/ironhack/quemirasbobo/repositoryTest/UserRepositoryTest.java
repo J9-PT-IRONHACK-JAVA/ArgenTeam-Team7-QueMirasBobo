@@ -25,8 +25,8 @@ public class UserRepositoryTest {
 
     @BeforeEach
     void setUp() {
-        userService.createUser(new User("Alfred", "Alfredito", "1234"));
-        userService.createUser(new User("Andres", "Andresito", "4321"));
+        userService.saveUser(new User("Alfred", "Alfredito", "1234"));
+        userService.saveUser(new User("Andres", "Andresito", "4321"));
     }
     @AfterEach
     void tearDown() {
@@ -40,7 +40,7 @@ public class UserRepositoryTest {
 
     @Test
     void createUserAndFindUserByUsernameTest() {
-        userService.createUser(new User("Silvia", "Silvi", "qwerty"));
+        userService.saveUser(new User("Silvia", "Silvi", "qwerty"));
         assertTrue(userService.findUserByUsername("Silvi").isPresent());
         assertEquals("Silvi", userService.findUserByUsername("Silvi").get().getUsername());
     }

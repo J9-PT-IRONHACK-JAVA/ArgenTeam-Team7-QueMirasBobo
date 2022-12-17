@@ -3,6 +3,7 @@ package com.ironhack.quemirasbobo;
 import com.ironhack.quemirasbobo.model.User;
 import com.ironhack.quemirasbobo.proxy.FilmProxy;
 import com.ironhack.quemirasbobo.proxy.PlatformProxy;
+import com.ironhack.quemirasbobo.repository.UserRepository;
 import com.ironhack.quemirasbobo.service.Menu;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
@@ -23,6 +24,7 @@ public class Day26ProyectoEquiposTvSeriesApplication implements CommandLineRunne
 
 	private final PlatformProxy platformProxy;
 
+	private final UserRepository userRepository;
 
 	public static void main(String[] args) {
 		SpringApplication.run(Day26ProyectoEquiposTvSeriesApplication.class, args);
@@ -41,6 +43,7 @@ public class Day26ProyectoEquiposTvSeriesApplication implements CommandLineRunne
 		//}
 		var scanner = new Scanner(System.in);
 		var user1 = new User("Juan", "juan", "pass");
+		userRepository.save(user1);
 		menu.userMenu(scanner,user1);
 		//menu.run();
 

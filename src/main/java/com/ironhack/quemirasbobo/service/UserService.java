@@ -1,10 +1,12 @@
 package com.ironhack.quemirasbobo.service;
 
+import com.ironhack.quemirasbobo.model.Film;
 import com.ironhack.quemirasbobo.model.User;
 import com.ironhack.quemirasbobo.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 
@@ -15,7 +17,8 @@ public class UserService {
     public Optional<User> findUserByUsername(String username) {
         return userRepository.findUserByUsername(username);
     }
-    public User createUser(User user) {
+
+    public User saveUser(User user) {
         return userRepository.save(user);
     }
 
