@@ -34,9 +34,11 @@ public class Menu {
         var scanner = new Scanner(System.in);
 
         System.out.println("Welcome!");
-        var user = LoginSignUpMenu(scanner);
-        if (user.isPresent())
-            userMenu(scanner, user.get());
+        while (true) {
+            var user = LoginSignUpMenu(scanner);
+            if (user.isPresent())
+                userMenu(scanner, user.get());
+        }
     }
 
     public void userMenu(Scanner scanner, User user) {
@@ -68,6 +70,8 @@ public class Menu {
                 }
                 case "3":{
                     System.out.println("Goodbye "+user.getName()+"!");
+                    //TODO
+                    // Go to LoginSignUpMenu
                     break;
                 }
                 case "4":{
@@ -83,6 +87,7 @@ public class Menu {
     }
 
     private void searchOption(Scanner scanner, User user) {
+        utils.clearConsole();
         System.out.println("Insert name of film to search: ");
         var film = scanner.nextLine();
         var result = filmProxy.searchFilmsByName(film);
@@ -215,6 +220,8 @@ public class Menu {
     }
 
     private void showAllWatchedFilms(Scanner scanner, User user) {
+        //TODO
+        // Handle all errors, if i don't have any watch seen, peta
         var allFilms = filmService.findFilms(user);
         for (int i = 0; i < allFilms.size(); i++) {
             System.out.printf("%d - %s\n", i + 1, allFilms.get(i).getName());
@@ -238,6 +245,7 @@ public class Menu {
                 3) Exit
                 """);
             choseLog = scanner.nextLine();
+            utils.clearConsole();
             switch (choseLog) {
                 case "1" -> user = loginMenu(scanner);
                 case "2" -> signUpMenu(scanner);
@@ -245,7 +253,7 @@ public class Menu {
                     System.out.println("Chau!");
                     System.exit(0);
                 }
-                default -> System.out.println("This option does not exist, please try again");
+                default -> System.err.println("This option does not exist, please try again");
             }
         }
         return user;

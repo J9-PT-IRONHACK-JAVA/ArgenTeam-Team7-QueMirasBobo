@@ -19,7 +19,7 @@ public class Utils {
     }
 
     public void promptEnterKey() {
-        System.out.println("Press ENTER to continue...");
+        System.out.println("\nPress ENTER to continue...");
         try{
             System.in.read();
         }catch (Exception e){
