@@ -2,11 +2,13 @@ package com.ironhack.quemirasbobo.service;
 
 import com.ironhack.quemirasbobo.dto.PlatformDto;
 import com.ironhack.quemirasbobo.model.Film;
+import com.ironhack.quemirasbobo.model.Platform;
 import com.ironhack.quemirasbobo.model.Type;
 import com.ironhack.quemirasbobo.model.User;
 import com.ironhack.quemirasbobo.proxy.FilmProxy;
 import com.ironhack.quemirasbobo.proxy.PlatformProxy;
 import com.ironhack.quemirasbobo.repository.FilmRepository;
+import com.ironhack.quemirasbobo.repository.PlatformRepository;
 import com.ironhack.quemirasbobo.repository.UserRepository;
 import com.ironhack.quemirasbobo.utils.PrintUtils;
 import com.ironhack.quemirasbobo.utils.Utils;
@@ -21,20 +23,16 @@ import java.util.Scanner;
 @RequiredArgsConstructor
 public class Menu {
 
-    private final UserRepository userRepository;
-
-
     private final FilmProxy filmProxy;
-
-
     private final PlatformProxy platformProxy;
-
     private final Utils utils;
-
+    private final UserRepository userRepository;
     private final FilmRepository filmRepository;
-
-
+    private final FilmService filmService;
     private final UserService userService;
+    private final PlatformRepository platformRepository;
+    private final PlatformService platformService;
+
     public void run(){
         var scanner = new Scanner(System.in);
 
@@ -103,6 +101,7 @@ public class Menu {
                 }
                 case "2":{
                     // TODO Las films que se guardan para cada user
+                    showAllWatchedFilms(scanner, user);
                     System.out.println("see all watched films");
                     break;
                 }
@@ -215,7 +214,7 @@ public class Menu {
                         filmType,
                         filmToGetPlatforms.getYear()
                         );
-                filmToSave.setUsers(List.of(user));
+                filmToSave.setUser(user);
                 filmToSave = filmRepository.save(filmToSave);
 
                 //var platformToSave = new Platform()
@@ -233,6 +232,20 @@ public class Menu {
             //TODO: Que pregunte si "desea ver la pelicula"?
             // Si la quiere ver, que lo guarde en la DB, sino, que vuelva al inicio del usuario
             // En la DB tiene que guardar LA PELICULA y LAS PLATAFORMAS
+        }
+    }
+
+    private void showAllWatchedFilms(Scanner scanner, User user) {
+        var allFilms = filmService.findFilms(user);
+        for (int i = 0; i < allFilms.size(); i++) {
+            System.out.printf("%d - %s\n", i + 1, allFilms.get(i).getName());
+        }
+        System.out.println("Choose one to see in which platform you can watch it again");
+        var option = scanner.nextLine();
+        var movie = allFilms.get(Integer.parseInt(option) - 1);
+        var listPlatforms = platformService.findPlatforms(movie);
+        for (int i = 0; i < listPlatforms.size(); i++) {
+            System.out.printf("%d - %s\n", i + 1, listPlatforms.get(i).getName());
         }
     }
 

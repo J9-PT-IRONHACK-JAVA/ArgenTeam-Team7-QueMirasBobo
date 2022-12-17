@@ -20,14 +20,15 @@ public class User {
     private String name;
     private String username;
     private String password;
-
+    /*
     @ManyToMany
     @JoinTable(
             name = "user_films",
             joinColumns = @JoinColumn (name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "film_id")
-    )
-    private List<Film> films = new ArrayList<>();
+    )*/
+    @OneToMany(mappedBy = "user")
+    private List<Film> films;// = new ArrayList<>();
 
     public User(String name, String username, String password) {
         this.name = name;
