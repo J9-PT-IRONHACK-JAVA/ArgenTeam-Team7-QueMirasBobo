@@ -59,3 +59,9 @@ Mysl Database from: <a href="https://www.db4free.net/">https://www.db4free.net</
 
 - Alfred Inga
 - Andres Martinez
+
+## Diagrams:
+
+UserCase: <a href="https://drive.google.com/file/d/1NsY8A9aLiy8e8ttAMMRATxbc-otl-qIs/view?usp=sharing"> UserCase Diagram</a>
+
+ModelCase: <a href="https://drive.google.com/file/d/1LmFyxxLamI3695-A491RAb2FQLh5tVuP/view?usp=sharing"> ModelCase Diagram</a>
