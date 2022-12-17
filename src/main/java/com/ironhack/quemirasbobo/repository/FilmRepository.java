@@ -12,5 +12,5 @@ public interface FilmRepository extends JpaRepository<Film,Long> {
 
     Optional<Film> findFilmByName(String name);
     Optional<Film> findFilmByUserId(Long id);
-    List<Film> findFilmsById(Long id);
+    List<Film> findFilmsByUserId(Long id);
 }
