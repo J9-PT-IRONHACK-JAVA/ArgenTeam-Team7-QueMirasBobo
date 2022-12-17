@@ -46,7 +46,14 @@ The soft is using an Online Mysql Database, so you can run your soft from every 
 
 ## Demo:
 
-You can download <a href="https://drive.google.com/file/d/11QHAcIlKWygH3RgMNAK1slPGNfTqY350/view?usp=sharing">HERE</a> a demo Jar for try it!
+For demo, you can download <a href="https://drive.google.com/file/d/1Hu6HGgfkw5ctWC6ZUbsORayyWwEY3MIL/view?usp=sharing">HERE</a> a demo Jar.
+
+For Run, in Terminal: 
+```
+java -jar quemirasbobo-cloud.jar
+```
+
+
 
 
 ## External uses:
