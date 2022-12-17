@@ -186,7 +186,9 @@ public class Menu {
 
                 var filmFromDatabase = filmRepository.findFilmByName(filmToSave.getName());
                 if(filmFromDatabase.isPresent()) {
-                    filmToSave = filmFromDatabase.get();
+                    if(Objects.equals(filmFromDatabase.get().getUser().getId(), user.getId())) {
+                        filmToSave = filmFromDatabase.get();
+                    }
                 }
 
                 List<Platform> finalPlatforms = new ArrayList<>();
