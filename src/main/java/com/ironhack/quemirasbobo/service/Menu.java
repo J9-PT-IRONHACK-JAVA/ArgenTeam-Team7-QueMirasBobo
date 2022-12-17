@@ -8,16 +8,14 @@ import com.ironhack.quemirasbobo.model.User;
 import com.ironhack.quemirasbobo.proxy.FilmProxy;
 import com.ironhack.quemirasbobo.proxy.PlatformProxy;
 import com.ironhack.quemirasbobo.repository.FilmRepository;
+import com.ironhack.quemirasbobo.repository.PlatformRepository;
 import com.ironhack.quemirasbobo.repository.UserRepository;
 import com.ironhack.quemirasbobo.utils.PrintUtils;
 import com.ironhack.quemirasbobo.utils.Utils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
-import java.util.List;
-import java.util.Objects;
-import java.util.Scanner;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -35,15 +33,16 @@ public class Menu {
 
     private final FilmRepository filmRepository;
 
-
     private final UserService userService;
+
+    private final PlatformRepository platformRepository;
     public void run(){
         var scanner = new Scanner(System.in);
 
         System.out.println("Welcome!");
         var user = LoginSignUpMenu(scanner);
         if (user.isPresent())
-            userMenu(scanner /*, user*/);
+            userMenu(scanner , user.get());
         /*
         System.out.println("Select LOGIN or CREATE user: ");
         var option = scanner.nextLine();
@@ -170,8 +169,12 @@ public class Menu {
             } while (flag);
 
             var filmToGetPlatforms = result.getResults().get(number - 1);
-
-            var platforms = platformProxy.getAllPlatformsFromFilmId(filmToGetPlatforms.getId());
+            List<PlatformDto> platforms = new ArrayList<PlatformDto>();
+            try {
+                platforms = platformProxy.getAllPlatformsFromFilmId(filmToGetPlatforms.getId());
+            }catch (Exception e){
+                platforms.add(new PlatformDto("No Platforms"));
+            }
             if (platforms.size() == 0){
                 System.out.println("The film does not have platforms...");
                 platforms.add(new PlatformDto("No Platforms"));
@@ -182,7 +185,7 @@ public class Menu {
                     System.out.println(platforms.get(i).getName());
                 }
             }
-            System.out.println("Do you want to see the movie? (Y/N");
+            System.out.println("Do you want to see the movie? (Y/N):");
             var option = scanner.nextLine().toUpperCase();
 
             while (!option.equals ("Y") && !option.equals ("N")){
@@ -191,7 +194,6 @@ public class Menu {
             }
 
             if (option.equals("Y")){
-                System.out.println("guardar peli");
 
                 Type filmType;
                 switch (filmToGetPlatforms.getType().toLowerCase()){
@@ -216,24 +218,39 @@ public class Menu {
                         filmType,
                         filmToGetPlatforms.getYear()
                         );
-                filmToSave.setUsers(List.of(user));
-                filmToSave = filmRepository.save(filmToSave);
 
-                //var platformToSave = new Platform()
-                // TODO, seguir esto!
+                var filmFromDatabase = filmRepository.findFilmByName(filmToSave.getName());
+                if(filmFromDatabase.isPresent()) {
+                    filmToSave = filmFromDatabase.get();
+                }
 
+                List<Platform> finalPlatforms = new ArrayList<>();
+                for (int i = 0; i < platforms.size(); i++) {
+                    var platformToSave = new Platform(platforms.get(i).getName());
+                    var platformOptional = platformRepository.findPlatformByName(platforms.get(i).getName());
+                    if(platformOptional.isPresent()){
+                        platformOptional.get().setFilms(List.of(filmToSave));
+                        var lastPlatform = platformRepository.save(platformOptional.get());
+                        finalPlatforms.add(lastPlatform);
+                    }else{
+                        platformToSave = new Platform(platforms.get(i).getName());
+                        platformToSave.setFilms(List.of(filmToSave));
+                        platformToSave = platformRepository.save(platformToSave);
+                        finalPlatforms.add(platformToSave);
+                    }
 
+                }
+                filmToSave.setPlatforms(finalPlatforms);
+                filmToSave.setUser(user);
+                filmRepository.save(filmToSave);
+                System.out.println("Film Watched and saved!");
+                utils.pause(2000);
 
             }else{
-                System.out.println("no guardar");
+                System.out.println("Film not Watched...");
+                utils.pause(2000);
             }
 
-
-
-
-            //TODO: Que pregunte si "desea ver la pelicula"?
-            // Si la quiere ver, que lo guarde en la DB, sino, que vuelva al inicio del usuario
-            // En la DB tiene que guardar LA PELICULA y LAS PLATAFORMAS
         }
     }
 

@@ -13,11 +13,17 @@ import java.util.List;
 public class Platform {
 
     @Id
-    //@GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String name;
 
     @ManyToMany (mappedBy = "platforms")
     private List<Film> films;
+
+    public Platform(String name) {
+        this.name = name;
+    }
+
+
 }

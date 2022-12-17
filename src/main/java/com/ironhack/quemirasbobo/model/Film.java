@@ -13,15 +13,15 @@ import java.util.List;
 public class Film {
 
     @Id
-    //@GeneratedValue(strategy = GenerationType.IDENTITY)
-
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
     private Type type;
     private Integer year;
 
-    @ManyToMany (mappedBy = "films")
-    private List<User> users = new ArrayList<>();
+    @ManyToOne (cascade = CascadeType.REMOVE)
+    @JoinColumn(name = "user_id")
+    private User user;
 
     @ManyToMany
     @JoinTable(
