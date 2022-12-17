@@ -36,7 +36,7 @@
 
 # Welcome to QUEMIRASBOBO Soft! :tv:
 
-QUEMIRASBOBO it is a little soft to search Films and their Platforms.
+QUEMIRASBOBO it a little program to search Films and their Platforms.
 
 In your personal space, you can save and list it!
 
@@ -46,14 +46,12 @@ The soft is using an Online Mysql Database, so you can run your soft from every 
 
 ## Demo:
 
-For demo, you can download <a href="https://drive.google.com/file/d/1Hu6HGgfkw5ctWC6ZUbsORayyWwEY3MIL/view?usp=sharing">HERE</a> a demo Jar.
+For demo, you can download from <a href="https://drive.google.com/file/d/1Hu6HGgfkw5ctWC6ZUbsORayyWwEY3MIL/view?usp=sharing">HERE</a>.
 
 For Run, in Terminal: 
 ```
 java -jar quemirasbobo-cloud.jar
 ```
-
-
 
 
 ## External uses:
