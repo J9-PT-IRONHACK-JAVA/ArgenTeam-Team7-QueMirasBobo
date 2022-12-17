@@ -1,9 +1,11 @@
-package com.ironhack.quemirasbobo.dto;
+package com.ironhack.quemirasbobo.model;
 
 
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -18,7 +20,12 @@ public class User {
     private String username;
     private String password;
 
-    @ManyToMany
-    private <List>TvShow tvShow;
+    @OneToMany (mappedBy = "user")
+    private List<Film> filmList;
 
+    public User(String name, String username, String password) {
+        this.name = name;
+        this.username = username;
+        this.password = password;
+    }
 }
