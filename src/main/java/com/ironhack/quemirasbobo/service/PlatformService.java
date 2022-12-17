@@ -15,7 +15,7 @@ public class PlatformService {
     private final PlatformRepository platformRepository;
 
     public List<Platform> findPlatforms(Film film) {
-        return platformRepository.findPlatformsByMovieId(film.getId());
+        return platformRepository.findAllByFilmsId(film.getId());
     }
 
     public Platform savePlatform(Platform platform) {

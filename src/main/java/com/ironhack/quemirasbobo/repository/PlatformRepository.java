@@ -11,6 +11,5 @@ import java.util.List;
 public interface PlatformRepository extends JpaRepository<Platform, Long> {
 
     Optional<Platform> findPlatformByName(String name);
-
-    List<Platform> findPlatformsByMovieId(Long id);
+    List<Platform> findAllByFilmsId(Long id);
 }

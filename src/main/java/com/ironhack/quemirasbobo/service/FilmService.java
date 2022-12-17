@@ -17,7 +17,7 @@ public class FilmService {
     private final FilmRepository filmRepository;
 
     public Optional<Film> findFilmByName(String name) {
-        return filmRepository.findByName(name);
+        return filmRepository.findFilmByName(name);
     }
     public List<Film> findFilms(User user) {
         return filmRepository.findFilmsById(user.getId());
