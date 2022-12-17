@@ -19,9 +19,9 @@ public class Film {
     private Type type;
     private Integer year;
 
-    @ManyToOne(cascade = CascadeType.REMOVE)
+    @ManyToOne (cascade = CascadeType.REMOVE)
     @JoinColumn(name = "user_id")
-    private User user; //List<User> users = new ArrayList<>();
+    private User user;
 
     @ManyToMany
     @JoinTable(

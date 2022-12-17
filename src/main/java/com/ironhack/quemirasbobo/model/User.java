@@ -5,7 +5,6 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -20,15 +19,9 @@ public class User {
     private String name;
     private String username;
     private String password;
-    /*
-    @ManyToMany
-    @JoinTable(
-            name = "user_films",
-            joinColumns = @JoinColumn (name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "film_id")
-    )*/
-    @OneToMany(mappedBy = "user")
-    private List<Film> films;// = new ArrayList<>();
+
+    @OneToMany (mappedBy = "user")
+    private List<Film> filmList;
 
     public User(String name, String username, String password) {
         this.name = name;
