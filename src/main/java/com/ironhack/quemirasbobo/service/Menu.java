@@ -32,23 +32,30 @@ public class Menu {
     private final PlatformService platformService;
     public void run(){
         var scanner = new Scanner(System.in);
+        String chau = "";
 
-        System.out.println("Welcome!");
-        while (true) {
-            var user = LoginSignUpMenu(scanner);
-            if (user.isPresent())
-                userMenu(scanner, user.get());
+        utils.clearConsole();
+
+        Optional<User> user = LoginSignUpMenu(scanner);
+        while (!chau.equals("4") && user.isPresent()) {
+            chau = userMenu(scanner, user.get()); // -3
+            if (chau.equals("3")) {
+                user = LoginSignUpMenu(scanner);
+            }
         }
+        utils.clearConsole();
+        PrintUtils.goodBye();
+        System.exit(0);
     }
 
-    public void userMenu(Scanner scanner, User user) {
+    public String userMenu(Scanner scanner, User user) {
         String option ="";
 
         while(!option.equals("3")){
             utils.clearConsole();
-            System.out.println("********************");
+            System.out.println("************************");
             System.out.println(user.getName() + " personal workspace");
-            System.out.println("********************");
+            System.out.println("************************");
             System.out.println("Select option:");
             System.out.println("    1) Search Film.");
             System.out.println("    2) See all Watched Films.");
@@ -63,15 +70,12 @@ public class Menu {
                     break;
                 }
                 case "2":{
-                    // TODO Las films que se guardan para cada user
                     showAllWatchedFilms(scanner, user);
-                    System.out.println("see all watched films");
                     break;
                 }
                 case "3":{
                     System.out.println("Goodbye "+user.getName()+"!");
-                    //TODO
-                    // Go to LoginSignUpMenu
+                    utils.pause(2000);
                     break;
                 }
                 case "4":{
@@ -84,6 +88,7 @@ public class Menu {
                 }
             }
         }
+        return option;
     }
 
     private void searchOption(Scanner scanner, User user) {
@@ -92,7 +97,6 @@ public class Menu {
         var film = scanner.nextLine();
         var result = filmProxy.searchFilmsByName(film);
 
-        //TODO: Ver si el size es 0, decirle que busque otro nombre
         if(result.getResults().size() == 0){
             System.out.println("Your search did not return any results, please try again...");
             utils.pause(1500);
@@ -222,25 +226,45 @@ public class Menu {
     }
 
     private void showAllWatchedFilms(Scanner scanner, User user) {
-        //TODO
-        // Handle all errors, if i don't have any watch seen, peta
+        utils.clearConsole();
+        System.out.println("************************");
+        System.out.println(user.getName() + " watched films");
+        System.out.println("************************");
         var allFilms = filmService.findFilms(user);
-        for (int i = 0; i < allFilms.size(); i++) {
-            System.out.printf("%d - %s\n", i + 1, allFilms.get(i).getName());
-        }
-        System.out.println("Choose one to see in which platform you can watch it again");
-        var option = scanner.nextLine();
-        var movie = allFilms.get(Integer.parseInt(option) - 1);
-        var listPlatforms = platformService.findPlatforms(movie);
-        for (int i = 0; i < listPlatforms.size(); i++) {
-            System.out.printf("%d - %s\n", i + 1, listPlatforms.get(i).getName());
+        if (allFilms.size() > 0) {
+            for (int i = 0; i < allFilms.size(); i++) {
+                System.out.printf("%d - %s\n", i + 1, allFilms.get(i).getName());
+            }
+            System.out.println("Choose one to see in which platform you can watch it again");
+            var option = scanner.nextLine();
+            try {
+                if (Integer.parseInt(option) > allFilms.size() || Integer.parseInt(option) < 1) {
+                    System.err.println("This is not an option! Try again");
+                    utils.pause(2000);
+                } else {
+                    var movie = allFilms.get(Integer.parseInt(option) - 1);
+                    var listPlatforms = platformService.findPlatforms(movie);
+                    for (int i = 0; i < listPlatforms.size(); i++) {
+                        System.out.printf("%d - %s\n", i + 1, listPlatforms.get(i).getName());
+                    }
+                    utils.promptEnterKey();
+                }
+            } catch (NumberFormatException e) {
+                    System.err.println("This is not a number. Returning to main menu...");
+                    utils.pause(2000);
+            }
+        } else {
+            System.out.println("You haven't watched any film yet! Returning to main menu...");
+            utils.pause(4000);
         }
     }
 
     private Optional<User> LoginSignUpMenu(Scanner scanner) {
-        String choseLog;
+        String choseLog = "";
         Optional<User> user = Optional.empty();
-        while (user.isEmpty()) {
+        while (!choseLog.equals("3") && user.isEmpty()) {
+            utils.clearConsole();
+            System.out.println("Welcome to QUEMIRASBOBOSOFT!");
             System.out.println("""
                 1) Login
                 2) Sign up
@@ -252,8 +276,7 @@ public class Menu {
                 case "1" -> user = loginMenu(scanner);
                 case "2" -> signUpMenu(scanner);
                 case "3" -> {
-                    System.out.println("Chau!");
-                    System.exit(0);
+                    user = Optional.empty();
                 }
                 default -> System.err.println("This option does not exist, please try again");
             }
@@ -287,10 +310,13 @@ public class Menu {
     }
 
     private void signUpMenu(Scanner scanner) {
+        //TODO
+        // ver si existe un usuario con el mismo username
         System.out.println("Insert NAME:");
         var name = scanner.nextLine();
         System.out.println("Insert USERNAME:");
         var username = scanner.nextLine();
+
         System.out.println("Insert PASSWORD:");
         var password = scanner.nextLine();
 
